@@ -2,6 +2,8 @@ package cache
 
 import (
 	algo "caching/algorithms"
+	domain "caching/domain"
+	response "caching/response"
 	"fmt"
 )
 
@@ -21,20 +23,21 @@ func InItCache(capacity int) *LRUCaching {
 
 }
 
-func (self *LRUCaching) Get(key int) string {
+func (self *LRUCaching) Get(key int) response.CacheResponse {
 	node, exists := self.Storage[key]
 
 	if !exists {
 		//node exists so we will have to move it to last
-		fmt.Println("Key doesnt exist")
+		err := fmt.Errorf("Key doesnt exist")
+		return response.Init(err)
 	}
-	print(node.Data.Key, node.Data.Value)
+	//print(node.Data.Key, node.Data.Value)
 	self.Dll.MoveToEnd(node)
-	return node.Data.Value
+	return response.CacheResponse{Pokemon: node.Data.Value}
 
 }
 
-func (self *LRUCaching) Put(key int, value string) {
+func (self *LRUCaching) Put(key int, value domain.Pokemon) {
 	//if the key already exists update its value otherwise append to end
 	if self.Dll.Len >= self.Capacity {
 		//perform eviction
@@ -54,8 +57,19 @@ func (self *LRUCaching) Evict() {
 	delete(self.Storage, node.Data.Key)
 }
 
-func (self *LRUCaching) ListAll() {
-	for k, v := range self.Storage {
-		fmt.Println(k, *v.Data)
+func (self *LRUCaching) ListAll() []domain.Pokemon {
+
+	return self.Dll.ListElements()
+}
+
+func (self *LRUCaching) DeleteById(key int) response.CacheResponse {
+	node, exist := self.Storage[key]
+	if !exist {
+		//node exists so we will have to move it to last
+		err := fmt.Errorf("Key doesnt exist")
+		return response.Init(err)
 	}
+	self.Dll.DetachNode(node)
+	delete(self.Storage,key)
+	return response.CacheResponse{Pokemon: node.Data.Value}
 }

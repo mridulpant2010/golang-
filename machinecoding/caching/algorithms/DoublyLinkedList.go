@@ -1,15 +1,16 @@
 package algorithms
 
 import (
+	domain "caching/domain"
 	"fmt"
 )
 
 type Pair struct {
 	Key   int
-	Value string
+	Value domain.Pokemon
 }
 
-func CreatePair(key int, value string) *Pair {
+func CreatePair(key int, value domain.Pokemon) *Pair {
 	return &Pair{key, value}
 }
 
@@ -19,7 +20,7 @@ type Node struct {
 	Data *Pair
 }
 
-func InItNode(key int, value string) *Node {
+func InItNode(key int, value domain.Pokemon) *Node {
 	return &Node{nil, nil, CreatePair(key, value)}
 }
 
@@ -34,7 +35,7 @@ func NewDoublyLinkedList() *DoublyLinkedList {
 	return &DoublyLinkedList{nil, nil, 0}
 }
 
-func (self *DoublyLinkedList) AddElementToEnd(key int, value string) *Node {
+func (self *DoublyLinkedList) AddElementToEnd(key int, value domain.Pokemon) *Node {
 	newNode := InItNode(key, value)
 	if self.Head == nil {
 		self.Head = newNode
@@ -109,13 +110,23 @@ func (dll *DoublyLinkedList) DetachNode(node *Node) {
 	}
 }
 func (self *DoublyLinkedList) Display() {
-
 	temp := self.Head
 	for temp != nil {
 		fmt.Println(temp.Data.Key, temp.Data.Value)
 		//fmt.Println(temp)
 		temp = temp.Next
 	}
+}
+
+func (self *DoublyLinkedList) ListElements() []domain.Pokemon {
+	var pokemon []domain.Pokemon
+	temp := self.Head
+	for temp != nil {
+		pokemon = append(pokemon, temp.Data.Value)
+		//fmt.Println(temp)
+		temp = temp.Next
+	}
+	return pokemon
 }
 
 func (self *DoublyLinkedList) Size() int {
