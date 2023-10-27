@@ -118,7 +118,7 @@ func (self *DoublyLinkedList) Display() {
 	}
 }
 
-func (self *DoublyLinkedList) ListElements() []domain.Pokemon {
+func (self *DoublyLinkedList) ListElements() []domain.Pokemon{
 	var pokemon []domain.Pokemon
 	temp := self.Head
 	for temp != nil {
